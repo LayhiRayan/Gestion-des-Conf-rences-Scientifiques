@@ -1,9 +1,9 @@
 package services;
 
-import beans.ParticipationEvenement;
-import beans.Utilisateur;
 import beans.Evenement;
-import beans.ERoleUtilisateur;
+import beans.EThemeEvenement;
+import beans.Intervenant;
+import beans.ParticipationEvenement;
 import connexion.Connexion;
 import dao.IDao;
 import java.sql.PreparedStatement;
@@ -14,24 +14,24 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class ParticipationEvenementService implements IDao<ParticipationEvenement> {
-    protected Connexion connexion;
-    protected UtilisateurService utilisateurService;
-    protected EvenementService evenementService;
+public class ParticipationEvenementService implements IDao<ParticipationEvenement> {
+    private Connexion connexion;
+    private EvenementService evenementService;
+    private IntervenantService intervenantService;
 
     public ParticipationEvenementService() {
         connexion = Connexion.getInstance();
-        utilisateurService = new UtilisateurService();
         evenementService = new EvenementService();
+        intervenantService = new IntervenantService();
     }
 
     @Override
     public boolean create(ParticipationEvenement o) {
-        String req = "INSERT INTO ParticipationEvenement (idUtilisateur, idEvenement) VALUES (?, ?)";
+        String req = "INSERT INTO ParticipationEvenement (evenement_id, intervenant_id) VALUES (?, ?)";
         try {
             PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
-            ps.setInt(1, o.getUtilisateur().getIdUtilisateur());
-            ps.setInt(2, o.getEvenement().getIdEvenement());
+            ps.setInt(1, o.getEvenement().getId());
+            ps.setInt(2, o.getIntervenant().getId());
             ps.executeUpdate();
             return true;
         } catch (SQLException ex) {
@@ -42,11 +42,11 @@ public abstract class ParticipationEvenementService implements IDao<Participatio
 
     @Override
     public boolean delete(ParticipationEvenement o) {
-        String req = "DELETE FROM ParticipationEvenement WHERE idUtilisateur = ? AND idEvenement = ?";
+        String req = "DELETE FROM ParticipationEvenement WHERE evenement_id = ? AND intervenant_id = ?";
         try {
             PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
-            ps.setInt(1, o.getUtilisateur().getIdUtilisateur());
-            ps.setInt(2, o.getEvenement().getIdEvenement());
+            ps.setInt(1, o.getEvenement().getId());
+            ps.setInt(2, o.getIntervenant().getId());
             ps.executeUpdate();
             return true;
         } catch (SQLException ex) {
@@ -56,32 +56,13 @@ public abstract class ParticipationEvenementService implements IDao<Participatio
     }
 
     @Override
-    public boolean update(ParticipationEvenement o) {
-        throw new UnsupportedOperationException("Impossible de mettre à jour une table avec une clé composée.");
+    public ParticipationEvenement findById(int id) {
+        throw new UnsupportedOperationException("findById() non applicable sur une table d'association avec clé composée");
     }
 
     @Override
-    public abstract ParticipationEvenement findById(int id);
-
-    public ParticipationEvenement findByUserAndEvent(int idUtilisateur, int idEvenement) {
-        String req = "SELECT * FROM ParticipationEvenement WHERE idUtilisateur = ? AND idEvenement = ?";
-        try {
-            PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
-            ps.setInt(1, idUtilisateur);
-            ps.setInt(2, idEvenement);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                Utilisateur utilisateur = utilisateurService.findById(rs.getInt("idUtilisateur"));
-                Evenement evenement = evenementService.findById(rs.getInt("idEvenement"));
-                
-                if (utilisateur.getRoleUtilisateur() == ERoleUtilisateur.INTERVENANT) {
-                    return new ParticipationEvenement(utilisateur, evenement);
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ParticipationEvenementService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    public boolean update(ParticipationEvenement o) {
+        throw new UnsupportedOperationException("update() non applicable sur une table d'association avec clé composée");
     }
 
     @Override
@@ -92,12 +73,10 @@ public abstract class ParticipationEvenementService implements IDao<Participatio
             PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Utilisateur utilisateur = utilisateurService.findById(rs.getInt("idUtilisateur"));
-                Evenement evenement = evenementService.findById(rs.getInt("idEvenement"));
-                
-                if (utilisateur.getRoleUtilisateur() == ERoleUtilisateur.INTERVENANT) {
-                    participations.add(new ParticipationEvenement(utilisateur, evenement));
-                }
+                participations.add(new ParticipationEvenement(
+                    evenementService.findById(rs.getInt("evenement_id")),
+                    intervenantService.findById(rs.getInt("intervenant_id"))
+                ));
             }
         } catch (SQLException ex) {
             Logger.getLogger(ParticipationEvenementService.class.getName()).log(Level.SEVERE, null, ex);

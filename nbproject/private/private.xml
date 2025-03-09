@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/services/UtilisateurService.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/beans/ERoleUtilisateur.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/services/AvisService.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/connexion/Connexion.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/beans/Ressource.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/services/RessourceService.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/services/EvenementService.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/beans/Utilisateur.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/beans/Inscription.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/services/ParticipationEvenementService.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/beans/Avis.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/services/InscriptionService.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/beans/ParticipationEvenement.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/beans/Evenement.java</file>
+            <file>file:/C:/xamp/htdocs/GestionConferences/src/dao/IDao.java</file>
+        </group>
+    </open-files>
+</project-private>

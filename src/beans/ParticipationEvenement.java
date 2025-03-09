@@ -1,20 +1,13 @@
 package beans;
 
 public class ParticipationEvenement {
-    private Utilisateur utilisateur;
+
     private Evenement evenement;
+    private Intervenant intervenant;
 
-    public ParticipationEvenement(Utilisateur utilisateur, Evenement evenement) {
-        this.utilisateur = utilisateur;
+    public ParticipationEvenement(Evenement evenement, Intervenant intervenant) {
         this.evenement = evenement;
-    }
-
-    public Utilisateur getUtilisateur() {
-        return utilisateur;
-    }
-
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+        this.intervenant = intervenant;
     }
 
     public Evenement getEvenement() {
@@ -23,5 +16,13 @@ public class ParticipationEvenement {
 
     public void setEvenement(Evenement evenement) {
         this.evenement = evenement;
+    }
+
+    public Intervenant getIntervenant() {
+        return intervenant;
+    }
+
+    public void setIntervenant(Intervenant intervenant) {
+        this.intervenant = intervenant;
     }
 }
