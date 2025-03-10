@@ -26,7 +26,7 @@ public class Test {
         evenementService.create(evenement4);
 
         List<Evenement> evenements = evenementService.findAll();
-        System.out.println("\n📌 Liste des événements :");
+        System.out.println("\n Liste des événements :");
         for (Evenement e : evenements) {
             System.out.println(e.getId() + " - " + e.getTheme() + " - " + e.getDate() + " - " + e.getLieu());
         }
@@ -42,7 +42,7 @@ public class Test {
         intervenantService.create(intervenant4);
 
         List<Intervenant> intervenants = intervenantService.findAll();
-        System.out.println("\n📌 Liste des intervenants :");
+        System.out.println("\n Liste des intervenants :");
         for (Intervenant i : intervenants) {
             System.out.println(i.getId() + " - " + i.getNom() + " " + i.getPrenom() + " - " + i.getSpecialite());
         }
@@ -55,25 +55,25 @@ public class Test {
         }
 
         List<ParticipationEvenement> participations = participationService.findAll();
-        System.out.println("\n📌 Liste des participations :");
+        System.out.println("\n Liste des participations :");
         for (ParticipationEvenement p : participations) {
             System.out.println("Événement : " + p.getEvenement().getTheme() + " | Intervenant : " + p.getIntervenant().getNom());
         }
 
         String dateRecherche = "2025-06-10";
-        System.out.println("\n📅 Recherche des événements par date (" + dateRecherche + ") :");
+        System.out.println("\n Recherche des événements par date (" + dateRecherche + ") :");
         for (Evenement e : evenementService.findByDate(dateRecherche)) {
             System.out.println(e.getId() + " - " + e.getTheme() + " - " + e.getDate() + " - " + e.getLieu());
         }
 
         String lieuRecherche = "Marrakech";
-        System.out.println("\n📍 Recherche des événements par lieu (" + lieuRecherche + ") :");
+        System.out.println("\n Recherche des événements par lieu (" + lieuRecherche + ") :");
         for (Evenement e : evenementService.findByLieu(lieuRecherche)) {
             System.out.println(e.getId() + " - " + e.getTheme() + " - " + e.getDate() + " - " + e.getLieu());
         }
 
         String nomRecherche = "LAYHI";
-        System.out.println("\n🔍 Recherche d'un intervenant par nom (" + nomRecherche + ") :");
+        System.out.println("\n Recherche d'un intervenant par nom (" + nomRecherche + ") :");
         for (Intervenant i : intervenantService.findByNom(nomRecherche)) {
             System.out.println(i.getId() + " - " + i.getNom() + " " + i.getPrenom() + " - " + i.getSpecialite());
         }
