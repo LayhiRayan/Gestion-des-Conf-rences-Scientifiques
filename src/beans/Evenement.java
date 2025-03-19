@@ -1,21 +1,41 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package beans;
 
-import java.util.List;
+/**
+ *
+ * @author HP-PC
+ */
+import beans.EThemeEvenement;
+
+import java.util.Date;
 
 public class Evenement {
 
     private int id;
+    private String titre;
     private EThemeEvenement theme;
-    private String date;
+    private Date date;
     private String lieu;
-    private List<ParticipationEvenement> participations;
+    private Intervenant intervenant;
 
-    public Evenement(int id, EThemeEvenement theme, String date, String lieu, List<ParticipationEvenement> participations) {
+    public Evenement(int id, String titre, EThemeEvenement theme, Date date, String lieu, Intervenant intervenant) {
         this.id = id;
+        this.titre = titre;
         this.theme = theme;
         this.date = date;
         this.lieu = lieu;
-        this.participations = participations;
+        this.intervenant = intervenant;
+    }
+
+    public Evenement(String titre, EThemeEvenement theme, Date date, String lieu, Intervenant intervenant) {
+        this.titre = titre;
+        this.theme = theme;
+        this.date = date;
+        this.lieu = lieu;
+        this.intervenant = intervenant;
     }
 
     public int getId() {
@@ -26,6 +46,14 @@ public class Evenement {
         this.id = id;
     }
 
+    public String getTitre() {
+        return titre;
+    }
+
+    public void setTitre(String titre) {
+        this.titre = titre;
+    }
+
     public EThemeEvenement getTheme() {
         return theme;
     }
@@ -34,11 +62,11 @@ public class Evenement {
         this.theme = theme;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -50,11 +78,11 @@ public class Evenement {
         this.lieu = lieu;
     }
 
-    public List<ParticipationEvenement> getParticipations() {
-        return participations;
+    public Intervenant getIntervenant() {
+        return intervenant;
     }
 
-    public void setParticipations(List<ParticipationEvenement> participations) {
-        this.participations = participations;
+    public void setIntervenant(Intervenant intervenant) {
+        this.intervenant = intervenant;
     }
 }

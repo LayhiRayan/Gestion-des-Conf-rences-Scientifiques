@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class IntervenantService implements IDao<Intervenant> {
+
     private Connexion connexion;
+    private IntervenantService is;
 
     public IntervenantService() {
         connexion = Connexion.getInstance();
@@ -35,6 +38,27 @@ public class IntervenantService implements IDao<Intervenant> {
             Logger.getLogger(IntervenantService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+
+    public List<Intervenant> findByNom(String nom) {
+        List<Intervenant> intervenants = new ArrayList<>();
+        String req = "SELECT * FROM Intervenant WHERE nom LIKE ?";
+        try {
+            PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
+            ps.setString(1, "%" + nom + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                intervenants.add(new Intervenant(
+                        rs.getInt("id"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("specialite")
+                ));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(IntervenantService.class.getName()).log(Level.SEVERE, "Erreur lors de la recherche par nom", ex);
+        }
+        return intervenants;
     }
 
     @Override
@@ -77,10 +101,10 @@ public class IntervenantService implements IDao<Intervenant> {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Intervenant(
-                    rs.getInt("id"),
-                    rs.getString("nom"),
-                    rs.getString("prenom"),
-                    rs.getString("specialite")
+                        rs.getInt("id"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("specialite")
                 );
             }
         } catch (SQLException ex) {
@@ -90,7 +114,49 @@ public class IntervenantService implements IDao<Intervenant> {
     }
 
     @Override
+
     public List<Intervenant> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Intervenant> intervenants = new ArrayList<>();
+        String req = "SELECT * FROM Intervenant";
+
+        try {
+            if (connexion.getConnexion() == null) {
+                throw new SQLException("La connexion à la base de données est null !");
+            }
+
+            PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                intervenants.add(new Intervenant(
+                        rs.getInt("id"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("specialite")
+                ));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(IntervenantService.class.getName()).log(Level.SEVERE, "Erreur lors de la récupération des intervenants", ex);
+        }
+
+        return intervenants;
     }
+
+    public List<ParticipationEvenement> findByEvenement(Evenement evenement) {
+        List<ParticipationEvenement> participations = new ArrayList<>();
+        String req = "SELECT * FROM ParticipationEvenement WHERE evenement_id = ?";
+        try {
+            PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
+            ps.setInt(1, evenement.getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Intervenant intervenant = is.findById(rs.getInt("intervenant_id"));
+                participations.add(new ParticipationEvenement(evenement, intervenant));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return participations;
+    }
+
 }

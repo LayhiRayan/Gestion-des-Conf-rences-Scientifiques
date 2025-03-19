@@ -45,4 +45,10 @@ public class Intervenant {
     public void setSpecialite(String specialite) {
         this.specialite = specialite;
     }
+
+    @Override
+    public String toString() {
+        return nom + " " + prenom;
+    }
+
 }

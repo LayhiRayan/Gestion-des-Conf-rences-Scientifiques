@@ -3,16 +3,14 @@ package services;
 import beans.Evenement;
 import beans.EThemeEvenement;
 import beans.Intervenant;
-import beans.ParticipationEvenement;
 import connexion.Connexion;
 import dao.IDao;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class EvenementService implements IDao<Evenement> {
 
@@ -24,16 +22,18 @@ public class EvenementService implements IDao<Evenement> {
 
     @Override
     public boolean create(Evenement o) {
-        String req = "INSERT INTO Evenement (theme, date, lieu) VALUES (?, ?, ?)";
+        String req = "INSERT INTO Evenement (titre, theme, date, lieu, intervenant_id) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
-            ps.setString(1, o.getTheme().name());
-            ps.setString(2, o.getDate());
-            ps.setString(3, o.getLieu());
+            ps.setString(1, o.getTitre());
+            ps.setString(2, o.getTheme().name());
+            ps.setDate(3, new Date(o.getDate().getTime()));
+            ps.setString(4, o.getLieu());
+            ps.setInt(5, o.getIntervenant().getId());
             ps.executeUpdate();
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(EvenementService.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(" Erreur lors de la création de l'événement: " + ex.getMessage());
         }
         return false;
     }
@@ -47,24 +47,26 @@ public class EvenementService implements IDao<Evenement> {
             ps.executeUpdate();
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(EvenementService.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Erreur lors de la suppression de l'événement: " + ex.getMessage());
         }
         return false;
     }
 
     @Override
     public boolean update(Evenement o) {
-        String req = "UPDATE Evenement SET theme = ?, date = ?, lieu = ? WHERE id = ?";
+        String req = "UPDATE Evenement SET titre = ?, theme = ?, date = ?, lieu = ?, intervenant_id = ? WHERE id = ?";
         try {
             PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
-            ps.setString(1, o.getTheme().name());
-            ps.setString(2, o.getDate());
-            ps.setString(3, o.getLieu());
-            ps.setInt(4, o.getId());
+            ps.setString(1, o.getTitre());
+            ps.setString(2, o.getTheme().name());
+            ps.setDate(3, new Date(o.getDate().getTime()));
+            ps.setString(4, o.getLieu());
+            ps.setInt(5, o.getIntervenant().getId());
+            ps.setInt(6, o.getId());
             ps.executeUpdate();
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(EvenementService.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(" Erreur lors de la mise à jour de l'événement: " + ex.getMessage());
         }
         return false;
     }
@@ -77,16 +79,18 @@ public class EvenementService implements IDao<Evenement> {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                IntervenantService is = new IntervenantService();
                 return new Evenement(
                         rs.getInt("id"),
+                        rs.getString("titre"),
                         EThemeEvenement.valueOf(rs.getString("theme")),
-                        rs.getString("date"),
+                        rs.getDate("date"),
                         rs.getString("lieu"),
-                        new ArrayList<ParticipationEvenement>()
+                        is.findById(rs.getInt("intervenant_id"))
                 );
             }
         } catch (SQLException ex) {
-            Logger.getLogger(EvenementService.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(" Erreur lors de la récupération de l'événement: " + ex.getMessage());
         }
         return null;
     }
@@ -98,17 +102,67 @@ public class EvenementService implements IDao<Evenement> {
         try {
             PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
             ResultSet rs = ps.executeQuery();
+            IntervenantService is = new IntervenantService();
             while (rs.next()) {
                 evenements.add(new Evenement(
                         rs.getInt("id"),
+                        rs.getString("titre"),
                         EThemeEvenement.valueOf(rs.getString("theme")),
-                        rs.getString("date"),
+                        rs.getDate("date"),
                         rs.getString("lieu"),
-                        new ArrayList<ParticipationEvenement>()
+                        is.findById(rs.getInt("intervenant_id"))
                 ));
             }
         } catch (SQLException ex) {
-            Logger.getLogger(EvenementService.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(" Erreur lors de la récupération des événements: " + ex.getMessage());
+        }
+        return evenements;
+    }
+
+    public List<Evenement> findByDate(Date date) {
+        List<Evenement> evenements = new ArrayList<>();
+        String req = "SELECT * FROM Evenement WHERE date = ?";
+        try {
+            PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
+            ps.setDate(1, date);
+            ResultSet rs = ps.executeQuery();
+            IntervenantService is = new IntervenantService();
+            while (rs.next()) {
+                evenements.add(new Evenement(
+                        rs.getInt("id"),
+                        rs.getString("titre"),
+                        EThemeEvenement.valueOf(rs.getString("theme")),
+                        rs.getDate("date"),
+                        rs.getString("lieu"),
+                        is.findById(rs.getInt("intervenant_id"))
+                ));
+            }
+        } catch (SQLException ex) {
+            System.err.println(" Erreur lors de la recherche des événements par date: " + ex.getMessage());
+        }
+        return evenements;
+    }
+
+    public List<Evenement> findByLieu(String lieu) {
+        List<Evenement> evenements = new ArrayList<>();
+        String req = "SELECT * FROM Evenement WHERE lieu LIKE ?";
+        try {
+            PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
+            ps.setString(1, "%" + lieu + "%"); // Recherche partielle par lieu
+            ResultSet rs = ps.executeQuery();
+            IntervenantService is = new IntervenantService();
+            while (rs.next()) {
+                evenements.add(new Evenement(
+                        rs.getInt("id"),
+                        rs.getString("titre"),
+                        EThemeEvenement.valueOf(rs.getString("theme")),
+                        rs.getDate("date"),
+                        rs.getString("lieu"),
+                        is.findById(rs.getInt("intervenant_id"))
+                ));
+            }
+        } catch (SQLException ex) {
+            System.err.println(" Erreur lors de la recherche des événements par lieu: " + ex.getMessage());
         }
         return evenements;
     }

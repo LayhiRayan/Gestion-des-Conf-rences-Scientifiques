@@ -1,7 +1,6 @@
 package services;
 
 import beans.Evenement;
-import beans.EThemeEvenement;
 import beans.Intervenant;
 import beans.ParticipationEvenement;
 import connexion.Connexion;
@@ -15,14 +14,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ParticipationEvenementService implements IDao<ParticipationEvenement> {
+
     private Connexion connexion;
-    private EvenementService evenementService;
-    private IntervenantService intervenantService;
 
     public ParticipationEvenementService() {
         connexion = Connexion.getInstance();
-        evenementService = new EvenementService();
-        intervenantService = new IntervenantService();
     }
 
     @Override
@@ -56,13 +52,13 @@ public class ParticipationEvenementService implements IDao<ParticipationEvenemen
     }
 
     @Override
-    public ParticipationEvenement findById(int id) {
-        throw new UnsupportedOperationException("findById() non applicable sur une table d'association avec clé composée");
+    public boolean update(ParticipationEvenement o) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public boolean update(ParticipationEvenement o) {
-        throw new UnsupportedOperationException("update() non applicable sur une table d'association avec clé composée");
+    public ParticipationEvenement findById(int id) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -73,10 +69,9 @@ public class ParticipationEvenementService implements IDao<ParticipationEvenemen
             PreparedStatement ps = connexion.getConnexion().prepareStatement(req);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                participations.add(new ParticipationEvenement(
-                    evenementService.findById(rs.getInt("evenement_id")),
-                    intervenantService.findById(rs.getInt("intervenant_id"))
-                ));
+                Evenement evenement = new EvenementService().findById(rs.getInt("evenement_id"));
+                Intervenant intervenant = new IntervenantService().findById(rs.getInt("intervenant_id"));
+                participations.add(new ParticipationEvenement(evenement, intervenant));
             }
         } catch (SQLException ex) {
             Logger.getLogger(ParticipationEvenementService.class.getName()).log(Level.SEVERE, null, ex);
