@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS evenement (
 
 -- Table des Participations (Relation entre intervenants et événements)
 CREATE TABLE IF NOT EXISTS participation_evenement (
-    evenement_id INT,
+    
     intervenant_id INT,
     PRIMARY KEY (evenement_id, intervenant_id),
     FOREIGN KEY (evenement_id) REFERENCES evenement(id) ON DELETE CASCADE,
