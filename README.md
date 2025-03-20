@@ -71,3 +71,4 @@ CREATE TABLE IF NOT EXISTS user (
     question_securite VARCHAR(255),
     reponse_securite VARCHAR(255)
 );
+```
