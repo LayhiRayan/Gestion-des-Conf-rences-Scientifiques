@@ -165,8 +165,6 @@ GestionConferences/
 - **Swing** (interface graphique)  
 - **MySQL** (base de données relationnelle)  
 - **JDBC** (Java Database Connectivity)  
-- **Maven** (ou structure manuelle)  
-- **UML (StarUML, Lucidchart, etc.)**
 
 ---
 
