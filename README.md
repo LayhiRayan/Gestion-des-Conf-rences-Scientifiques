@@ -161,7 +161,7 @@ GestionConferences/
 
 ## 🧰 Technologies et Bibliothèques Utilisées
 
-- **Java 17**  
+- **Java 8**  
 - **Swing** (interface graphique)  
 - **MySQL** (base de données relationnelle)  
 - **JDBC** (Java Database Connectivity)  
