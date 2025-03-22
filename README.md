@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS evenement (
     theme ENUM('SCIENCE', 'TECHNOLOGIE', 'INNOVATION', 'EDUCATION') NOT NULL,
     date_evenement DATE NOT NULL,
     lieu VARCHAR(100) NOT NULL,
-    FOREIGN KEY (intervenant_id) REFERENCES intervenant(id) ON DELETE SET NULL
 );
 
 -- Table des Participations (Relation entre intervenants et événements)
